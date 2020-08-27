@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <script src="web3.js"></script>
+        <script>
+            var Web3 = require('web3');
+            var web3 = new Web3();
+            //connect to the node
+            web3.setProvider(new
+            web3.providers.HttpProvider('http://localhost:8545'));
+
+            function getBlockInfo(blockNumber) {
+                
+                web3.eth.getBlock(blockNumber, (err, blockInfo) => {
+                    if (err) {
+                        document.getElementById('blockinfo').innerHTML = err;       
+                    }   
+                    else {
+                        var str = '';
+                        for(var key in blockInfo) {
+                            str += '<tr><td>' + key + '</td><td>' + JSON.stringify(blockInfo[key]) + '</td></tr>'; 
+                        }
+                        document.getElementById('blockinfo').innerHTML = '<table>' + str + '</table>';
+                    }     
+                });
+            }
+            var accounts
+
+            function getCoinBase() {
+                web3.eth.getCoinBase((error, accounts) => {
+                    if (error) {
+                        document.getElementById('address').innerHTML =  error;
+                    }
+                    else {
+                        var accountList = '';
+                        for (i = 0; i < accounts.length; i++) {
+				             accountList += '<li>' + accounts[i] + '</li>';
+			            }
+                        document.getElementById('address').innerHTML = '<ol start="0">' + accountList + '</ol>';
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <h1>NODE 1</h1>
+        <h1>MONEY TRANSFER</h1>
+        <hr>
+        <h2>Main Account Transfer</h2><hr>
+        <label>Address:  <div  id="address"></div></label><br>
+        <label>balance: ether</label><br><hr>
+        <label>Transfer To: </label>
+        <input type="text" id="blocknumber"/>
+        <label>Amount(ether): </label>
+        <input type="text" id="blocknumber"/>
+        <label>pass phrase: </label>
+        <input type="text" id="blocknumber"/>
+        <br>
+        <button type="button" onclick="getBlockInfo(document.getElementById('blocknumber').value)">send</button>
+        <hr>
+        <div id="blockinfo"></div>
+    </body>
+</html>
