@@ -8,18 +8,18 @@
             web3.setProvider(new
             web3.providers.HttpProvider('http://localhost:2222'));
 
-            function getBlockInfo(blockNumber) {
+            function getTransaction(trans) {
                 
-                web3.eth.getBlock(blockNumber, (err, blockInfo) => {
+                web3.eth.getTransaction(trans, (err, transinfo) => {
                     if (err) {
-                        document.getElementById('blockinfo').innerHTML = err;       
+                        document.getElementById('transinfo').innerHTML = err;       
                     }   
                     else {
                         var str = '';
-                        for(var key in blockInfo) {
-                            str += '<tr><td>' + key + '</td><td>' + JSON.stringify(blockInfo[key]) + '</td></tr>'; 
+                        for(var key in transinfo) {
+                            str += '<tr><td>' + key + '</td><td>' + JSON.stringify(transinfo[key]) + '</td></tr>'; 
                         }
-                        document.getElementById('blockinfo').innerHTML = '<table>' + str + '</table>';
+                        document.getElementById('transinfo').innerHTML = '<table>' + str + '</table>';
                     }     
                 });
             }
@@ -29,10 +29,10 @@
         <h1>Transaction Information</h1>
         <hr>
         <label>Enter Transaction Hash: </label>
-        <input type="text" id="blocknumber"/>
+        <input type="text" id="trans"/>
         <br> 
-        <button type="button" onclick="getBlockInfo(document.getElementById('blocknumber').value)">Get Transaction</button>
+        <button type="button" onclick="getTransaction(document.getElementById('trans').value)">Get Transaction</button>
         <hr>
-        <div id="blockinfo"></div>
+        <div id="transinfo"></div>
     </body>
 </html>

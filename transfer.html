@@ -8,37 +8,67 @@
             web3.setProvider(new
             web3.providers.HttpProvider('http://localhost:8545'));
 
-            function getBlockInfo(blockNumber) {
+            // function getBlockInfo(blockNumber) {
                 
-                web3.eth.getBlock(blockNumber, (err, blockInfo) => {
-                    if (err) {
-                        document.getElementById('blockinfo').innerHTML = err;       
-                    }   
-                    else {
-                        var str = '';
-                        for(var key in blockInfo) {
-                            str += '<tr><td>' + key + '</td><td>' + JSON.stringify(blockInfo[key]) + '</td></tr>'; 
-                        }
-                        document.getElementById('blockinfo').innerHTML = '<table>' + str + '</table>';
-                    }     
-                });
-            }
-            var accounts
+            //     web3.eth.getBlock(blockNumber, (err, blockInfo) => {
+            //         if (err) {
+            //             document.getElementById('blockinfo').innerHTML = err;       
+            //         }   
+            //         else {
+            //             var str = '';
+            //             for(var key in blockInfo) {
+            //                 str += '<tr><td>' + key + '</td><td>' + JSON.stringify(blockInfo[key]) + '</td></tr>'; 
+            //             }
+            //             document.getElementById('blockinfo').innerHTML = '<table>' + str + '</table>';
+            //         }     
+            //     });
+            // }
+            // var accounts
 
-            function getCoinBase() {
-                web3.eth.getCoinBase((error, accounts) => {
+                // web3.eth.coinbase((error,adds) =>{
+                //     if (error) {
+                //         document.getElementById('address').innerHTML =  error;
+                //     }
+                //     else {
+                //         document.getElementById('address').innerHTML = web3.eth.getCoinBase(balance,"ether") + ' ether';
+                            
+                //     }
+                // });
+                var accounts;
+
+                web3.eth.getCoinbase(
+                    function(error, result){ 
                     if (error) {
-                        document.getElementById('address').innerHTML =  error;
+                        // console.error(error);
+                        document.getElementById('address').innerHTML = error;
+                    } else {
+                        // console.log(result); 
+                        accounts = result;
+                        document.getElementById('address').innerHTML = result;
+                    }
+                })	
+
+            
+                web3.eth.getBalance(web3.eth.accounts[0], (error, balance) => {
+                    if (error) {
+                        console.log(error);
                     }
                     else {
-                        var accountList = '';
-                        for (i = 0; i < accounts.length; i++) {
-				             accountList += '<li>' + accounts[i] + '</li>';
-			            }
-                        document.getElementById('address').innerHTML = '<ol start="0">' + accountList + '</ol>';
+                        document.getElementById('balance').innerHTML = web3.fromWei(balance,"ether") + ' ether';
                     }
-                });
-            }
+                })
+
+                function sendTransaction(hash, ether, pass) {
+                    web3.personal.sendTransaction({from: accounts, to: hash, value: web3.toWei(ether, "ether")}, pass, (err, transaction) => {
+                        if (err) {
+                            document.getElementById('transactionHash').innerHTML = err;       
+                        }   
+                        else {
+                            document.getElementById('transactionHash').innerHTML = transaction;
+                        }     
+                    });
+                }
+
         </script>
     </head>
     <body>
@@ -46,17 +76,18 @@
         <h1>MONEY TRANSFER</h1>
         <hr>
         <h2>Main Account Transfer</h2><hr>
-        <label>Address:  <div  id="address"></div></label><br>
-        <label>balance: ether</label><br><hr>
+        <label>Address:  <span  id="address"></span></label><br>
+        <label>balance:  <span  id="balance"></span></label><br><hr>
         <label>Transfer To: </label>
-        <input type="text" id="blocknumber"/>
+        <input type="text" id="hash"/>
         <label>Amount(ether): </label>
-        <input type="text" id="blocknumber"/>
+        <input type="text" id="ether"/>
         <label>pass phrase: </label>
-        <input type="text" id="blocknumber"/>
+        <input type="text" id="pass"/>
         <br>
-        <button type="button" onclick="getBlockInfo(document.getElementById('blocknumber').value)">send</button>
+        <button type="button" onclick="sendTransaction(document.getElementById('hash').value, document.getElementById('ether').value, document.getElementById('pass').value)">send</button>
         <hr>
-        <div id="blockinfo"></div>
+        <br>
+        <div id="transactionHash"></div>
     </body>
 </html>
